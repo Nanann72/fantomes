@@ -1,115 +1,109 @@
-import Formulaire from "./formulaire";
+import Link from "next/link";
+import type { Metadata } from "next";
 
-const exemples = [
-  { nom: "Un essai jamais résilié", mensuel: 9.99 },
-  { nom: "Un service remplacé par un autre", mensuel: 5.99 },
-  { nom: "Une option activée une seule fois", mensuel: 2.99 },
-];
+export const metadata: Metadata = {
+  title: "Politique de confidentialité | Fantômes",
+  robots: { index: true, follow: true },
+};
 
-const euros = (n: number) =>
-  n.toLocaleString("fr-FR", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  });
-
-const total = exemples.reduce((s, e) => s + e.mensuel * 12, 0);
-
-export default function Accueil() {
+export default function Confidentialite() {
   return (
-    <main className="mx-auto max-w-xl px-5 pb-6 pt-10">
-      <p className="text-sm font-semibold uppercase tracking-widest text-brule">
-        Fantômes
-      </p>
+    <main className="mx-auto max-w-xl px-5 pb-10 pt-10">
+      <Link href="/" className="inline-block py-3 text-sm underline">
+        ← Retour à l&apos;accueil
+      </Link>
 
-      <h1 className="mt-4 text-4xl sm:text-5xl">
-        Débusque les abonnements que tu paies sans t&apos;en servir.
-      </h1>
+      <h1 className="mt-4 text-4xl">Politique de confidentialité</h1>
 
-      <p className="mt-5 text-lg">
-        On repère les prélèvements qui reviennent, on les classe par ce
-        qu&apos;ils te coûtent chaque année, et la lettre de résiliation est
-        déjà écrite. Tu n&apos;as plus qu&apos;à l&apos;envoyer.
-      </p>
-
-      <div id="inscription">
-        <Formulaire />
-      </div>
-      <p className="mt-3 text-center text-sm">
-        Fantômes n&apos;est pas encore ouvert. Aucun paiement demandé.
-      </p>
-
-      <section className="mt-14 border-t border-filet pt-10">
-        <h2 className="text-2xl">Petits par mois, énormes par an.</h2>
-        <ul className="mt-5 divide-y divide-filet border-y border-filet">
-          {exemples.map((e) => (
-            <li
-              key={e.nom}
-              className="flex items-baseline justify-between gap-4 py-3"
-            >
-              <span>
-                {e.nom}
-                <span className="block text-sm opacity-70">
-                  {euros(e.mensuel)} € par mois
-                </span>
-              </span>
-              <span className="whitespace-nowrap font-titre text-xl font-bold text-brule">
-                {euros(e.mensuel * 12)} €
-              </span>
-            </li>
-          ))}
-        </ul>
-        <p className="mt-4 flex items-baseline justify-between gap-4">
-          <span className="font-semibold">Total par an</span>
-          <span className="font-titre text-3xl font-bold text-brule">
-            {euros(total)} €
-          </span>
-        </p>
-        <p className="mt-2 text-sm opacity-70">
-          Exemple chiffré pour illustrer. Ton total dépend de tes propres
-          prélèvements.
-        </p>
-      </section>
-
-      <section className="mt-14 border-t border-filet pt-10">
-        <h2 className="text-2xl">Comment ça marche</h2>
-        <ol className="mt-5 space-y-6">
-          <li>
-            <h3 className="text-xl">1. On repère les prélèvements réguliers</h3>
-            <p className="mt-1">
-              Tout ce qui revient chaque mois ou chaque année sur ton compte.
-            </p>
-          </li>
-          <li>
-            <h3 className="text-xl">2. Tu vois ce que ça coûte par an</h3>
-            <p className="mt-1">
-              Les plus lourds en premier. Un petit montant mensuel pèse vite
-              lourd sur douze mois.
-            </p>
-          </li>
-          <li>
-            <h3 className="text-xl">3. Tu choisis, la lettre est prête</h3>
-            <p className="mt-1">
-              Pour chaque abonnement que tu ne veux plus, une lettre de
-              résiliation à copier ou à imprimer. C&apos;est toi qui décides.
-            </p>
-          </li>
-        </ol>
-      </section>
-
-      <section className="mt-14 border-t border-filet pt-10">
-        <h2 className="text-2xl">Ouverture prochaine</h2>
+      <section className="mt-8">
+        <h2 className="text-2xl">Qui est responsable de tes données</h2>
         <p className="mt-3">
-          Fantômes est en construction. Laisse ton email en haut de la page :
-          on te prévient le jour de l&apos;ouverture, sans rien te demander
-          d&apos;autre.
+          Erlann Deroche, entrepreneur individuel, 51 bis rue du stade, 72230
+          Mulsanne. Contact : erlann.drc72@gmail.com.
         </p>
-        <a
-          href="#inscription"
-          className="mt-6 flex min-h-14 w-full items-center justify-center rounded-lg border border-encre px-6 text-lg font-bold"
-        >
-          Remonter pour m&apos;inscrire
-        </a>
       </section>
+
+      <section className="mt-8">
+        <h2 className="text-2xl">Ton relevé bancaire</h2>
+        <p className="mt-3">
+          Ton relevé est analysé directement dans ton navigateur, sur ton
+          appareil. Il n&apos;est jamais envoyé à nos serveurs et nous ne le
+          conservons pas. Quand tu fermes la page, il disparaît.
+        </p>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-2xl">Les données que nous conservons</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5">
+          <li>
+            Ton adresse email, si tu t&apos;inscris à la liste d&apos;attente,
+            uniquement pour te prévenir de l&apos;ouverture de Fantômes. Base
+            légale : ton consentement, que tu donnes en envoyant le
+            formulaire.
+          </li>
+          <li>
+            Ton adresse email, une fois le service ouvert, pour t&apos;envoyer
+            ton accès et te permettre de te connecter.
+          </li>
+          <li>
+            Les informations de ta commande (date, montant, statut du
+            paiement), pour la comptabilité et le suivi.
+          </li>
+        </ul>
+        <p className="mt-3">
+          Base légale pour les commandes : l&apos;exécution du contrat de
+          vente, et nos obligations comptables.
+        </p>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-2xl">Durée de conservation</h2>
+        <p className="mt-3">
+          Les données de commande sont conservées 10 ans, comme l&apos;exige
+          la loi comptable. Ton compte et ton email sont conservés tant que tu
+          ne demandes pas leur suppression. Les adresses de la liste
+          d&apos;attente sont conservées jusqu&apos;à l&apos;ouverture du
+          service ou jusqu&apos;à ta demande de suppression.
+        </p>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-2xl">Nos prestataires</h2>
+        <ul className="mt-3 list-disc space-y-2 pl-5">
+          <li>Stripe : traite ton paiement. Nous ne voyons pas ta carte.</li>
+          <li>Supabase : héberge ton compte et ton email.</li>
+          <li>Vercel : héberge le site et mesure son audience.</li>
+        </ul>
+        <p className="mt-3">
+          Certains de ces prestataires sont situés hors de l&apos;Union
+          européenne, notamment aux États-Unis. Les transferts s&apos;appuient
+          sur les garanties prévues par le RGPD.
+        </p>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-2xl">Cookies et mesure d&apos;audience</h2>
+        <p className="mt-3">
+          Nous mesurons l&apos;audience du site avec Vercel Web Analytics, un
+          outil conçu pour fonctionner sans cookie et sans te suivre d&apos;un
+          site à l&apos;autre. Nous ne l&apos;utilisons pas pour faire de la
+          publicité.
+        </p>
+      </section>
+
+      <section className="mt-8">
+        <h2 className="text-2xl">Tes droits</h2>
+        <p className="mt-3">
+          Tu peux demander l&apos;accès à tes données, leur correction, leur
+          suppression, ou t&apos;opposer à leur traitement, en écrivant à
+          erlann.drc72@gmail.com. Si tu estimes que tes droits ne sont pas
+          respectés, tu peux saisir la CNIL (cnil.fr).
+        </p>
+      </section>
+
+      <p className="mt-8 text-sm opacity-70">
+        Dernière mise à jour : 4 octobre 2026.
+      </p>
     </main>
   );
 }
