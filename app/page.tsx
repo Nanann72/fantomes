@@ -1,3 +1,4 @@
+import Demo from "./demo";
 import Formulaire from "./formulaire";
 
 const exemples = [
@@ -70,31 +71,7 @@ export default function Accueil() {
         </p>
       </section>
 
-      <section className="mt-14 border-t border-filet pt-10">
-        <h2 className="text-2xl">Comment ça marche</h2>
-        <ol className="mt-5 space-y-6">
-          <li>
-            <h3 className="text-xl">1. On repère les prélèvements réguliers</h3>
-            <p className="mt-1">
-              Tout ce qui revient chaque mois ou chaque année sur ton compte.
-            </p>
-          </li>
-          <li>
-            <h3 className="text-xl">2. Tu vois ce que ça coûte par an</h3>
-            <p className="mt-1">
-              Les plus lourds en premier. Un petit montant mensuel pèse vite
-              lourd sur douze mois.
-            </p>
-          </li>
-          <li>
-            <h3 className="text-xl">3. Tu choisis, la lettre est prête</h3>
-            <p className="mt-1">
-              Pour chaque abonnement que tu ne veux plus, une lettre de
-              résiliation à copier ou à imprimer. C&apos;est toi qui décides.
-            </p>
-          </li>
-        </ol>
-      </section>
+      <Demo />
 
       <section className="mt-14 border-t border-filet pt-10">
         <h2 className="text-2xl">Ouverture prochaine</h2>
