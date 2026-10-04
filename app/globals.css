@@ -1,0 +1,31 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-papier: #f7f2e8;
+  --color-encre: #14213d;
+  --color-brule: #e4572e;
+  --color-filet: #d9d1bf;
+  --font-titre: var(--font-fraunces), Georgia, serif;
+  --font-texte: var(--font-instrument), system-ui, sans-serif;
+}
+
+html {
+  background-color: var(--color-papier);
+  color: var(--color-encre);
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-texte);
+  font-size: 1.0625rem;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-titre);
+  font-weight: 700;
+  line-height: 1.1;
+}
