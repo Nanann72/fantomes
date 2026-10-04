@@ -1,3 +1,5 @@
+import Formulaire from "./formulaire";
+
 const exemples = [
   { nom: "Un essai jamais résilié", mensuel: 9.99 },
   { nom: "Un service remplacé par un autre", mensuel: 5.99 },
@@ -11,9 +13,6 @@ const euros = (n: number) =>
   });
 
 const total = exemples.reduce((s, e) => s + e.mensuel * 12, 0);
-
-const mail =
-  "mailto:erlann.drc72@gmail.com?subject=Pr%C3%A9viens-moi%20de%20l%27ouverture%20de%20Fant%C3%B4mes&body=Bonjour%2C%20pr%C3%A9venez-moi%20quand%20Fant%C3%B4mes%20ouvre.";
 
 export default function Accueil() {
   return (
@@ -32,12 +31,9 @@ export default function Accueil() {
         déjà écrite. Tu n&apos;as plus qu&apos;à l&apos;envoyer.
       </p>
 
-      <a
-        href={mail}
-        className="mt-8 flex min-h-14 w-full items-center justify-center rounded-lg bg-brule px-6 text-lg font-bold text-papier"
-      >
-        Me prévenir à l&apos;ouverture
-      </a>
+      <div id="inscription">
+        <Formulaire />
+      </div>
       <p className="mt-3 text-center text-sm">
         Fantômes n&apos;est pas encore ouvert. Aucun paiement demandé.
       </p>
@@ -103,15 +99,15 @@ export default function Accueil() {
       <section className="mt-14 border-t border-filet pt-10">
         <h2 className="text-2xl">Ouverture prochaine</h2>
         <p className="mt-3">
-          Fantômes est en construction. Laisse-nous ton email avec le bouton
-          ci-dessus : on te prévient le jour de l&apos;ouverture, sans rien te
-          demander d&apos;autre.
+          Fantômes est en construction. Laisse ton email en haut de la page :
+          on te prévient le jour de l&apos;ouverture, sans rien te demander
+          d&apos;autre.
         </p>
         <a
-          href={mail}
+          href="#inscription"
           className="mt-6 flex min-h-14 w-full items-center justify-center rounded-lg border border-encre px-6 text-lg font-bold"
         >
-          Me prévenir à l&apos;ouverture
+          Remonter pour m&apos;inscrire
         </a>
       </section>
     </main>
