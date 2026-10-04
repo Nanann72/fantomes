@@ -20,7 +20,7 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-    process.env.NEXT_PUBLIC_SITE_URL ?? "https://fantomes.vercel.app"
+        process.env.NEXT_PUBLIC_SITE_URL ?? "https://fantomes-umber.vercel.app"
   ),
   title: titre,
   description,
