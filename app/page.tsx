@@ -5,13 +5,19 @@ const exemples = [
 ];
 
 const euros = (n: number) =>
-  n.toLocaleString("fr-FR", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  n.toLocaleString("fr-FR", {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  });
 
 const total = exemples.reduce((s, e) => s + e.mensuel * 12, 0);
 
+const mail =
+  "mailto:erlann.drc72@gmail.com?subject=Pr%C3%A9viens-moi%20de%20l%27ouverture%20de%20Fant%C3%B4mes&body=Bonjour%2C%20pr%C3%A9venez-moi%20quand%20Fant%C3%B4mes%20ouvre.";
+
 export default function Accueil() {
   return (
-    <main className="mx-auto max-w-xl px-5 pb-16 pt-10">
+    <main className="mx-auto max-w-xl px-5 pb-6 pt-10">
       <p className="text-sm font-semibold uppercase tracking-widest text-brule">
         Fantômes
       </p>
@@ -21,26 +27,29 @@ export default function Accueil() {
       </h1>
 
       <p className="mt-5 text-lg">
-        Dépose ton relevé bancaire. On repère les prélèvements oubliés, classés
-        par ce qu&apos;ils te coûtent chaque année, avec la lettre de
-        résiliation prête à envoyer.
+        On repère les prélèvements qui reviennent, on les classe par ce
+        qu&apos;ils te coûtent chaque année, et la lettre de résiliation est
+        déjà écrite. Tu n&apos;as plus qu&apos;à l&apos;envoyer.
       </p>
 
       <a
-        href="#reserver"
+        href={mail}
         className="mt-8 flex min-h-14 w-full items-center justify-center rounded-lg bg-brule px-6 text-lg font-bold text-papier"
       >
-        Faire mon audit — 19 €
+        Me prévenir à l&apos;ouverture
       </a>
       <p className="mt-3 text-center text-sm">
-        Paiement unique. Pas d&apos;abonnement.
+        Fantômes n&apos;est pas encore ouvert. Aucun paiement demandé.
       </p>
 
       <section className="mt-14 border-t border-filet pt-10">
         <h2 className="text-2xl">Petits par mois, énormes par an.</h2>
         <ul className="mt-5 divide-y divide-filet border-y border-filet">
           {exemples.map((e) => (
-            <li key={e.nom} className="flex items-baseline justify-between gap-4 py-3">
+            <li
+              key={e.nom}
+              className="flex items-baseline justify-between gap-4 py-3"
+            >
               <span>
                 {e.nom}
                 <span className="block text-sm opacity-70">
@@ -66,42 +75,45 @@ export default function Accueil() {
       </section>
 
       <section className="mt-14 border-t border-filet pt-10">
-        <h2 className="text-2xl">Ce que tu obtiens</h2>
+        <h2 className="text-2xl">Comment ça marche</h2>
         <ol className="mt-5 space-y-6">
           <li>
-            <h3 className="text-xl">1. Les prélèvements oubliés, repérés</h3>
+            <h3 className="text-xl">1. On repère les prélèvements réguliers</h3>
             <p className="mt-1">
-              Tout ce qui revient chaque mois ou chaque année, trouvé dans ton
-              relevé.
+              Tout ce qui revient chaque mois ou chaque année sur ton compte.
             </p>
           </li>
           <li>
-            <h3 className="text-xl">2. Classés par coût annuel</h3>
+            <h3 className="text-xl">2. Tu vois ce que ça coûte par an</h3>
             <p className="mt-1">
-              Tu vois d&apos;abord ce qui pèse le plus, pas ce qui a l&apos;air
-              petit.
+              Les plus lourds en premier. Un petit montant mensuel pèse vite
+              lourd sur douze mois.
             </p>
           </li>
           <li>
-            <h3 className="text-xl">3. La lettre de résiliation, déjà écrite</h3>
+            <h3 className="text-xl">3. Tu choisis, la lettre est prête</h3>
             <p className="mt-1">
-              Une lettre par prélèvement, à copier ou à imprimer.
+              Pour chaque abonnement que tu ne veux plus, une lettre de
+              résiliation à copier ou à imprimer. C&apos;est toi qui décides.
             </p>
           </li>
         </ol>
       </section>
 
-      <section id="reserver" className="mt-14 border-t border-filet pt-10">
-        <h2 className="text-2xl">Ouverture en cours</h2>
+      <section className="mt-14 border-t border-filet pt-10">
+        <h2 className="text-2xl">Ouverture prochaine</h2>
         <p className="mt-3">
-          Fantômes ouvre ses premiers accès. Le paiement sera disponible ici
-          très bientôt.
+          Fantômes est en construction. Laisse-nous ton email avec le bouton
+          ci-dessus : on te prévient le jour de l&apos;ouverture, sans rien te
+          demander d&apos;autre.
         </p>
+        <a
+          href={mail}
+          className="mt-6 flex min-h-14 w-full items-center justify-center rounded-lg border border-encre px-6 text-lg font-bold"
+        >
+          Me prévenir à l&apos;ouverture
+        </a>
       </section>
-
-      <footer className="mt-14 border-t border-filet pt-6 text-sm">
-        <p>© Fantômes</p>
-      </footer>
     </main>
   );
 }
