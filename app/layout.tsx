@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import Link from "next/link";
 import { Fraunces, Instrument_Sans } from "next/font/google";
 import "./globals.css";
 
@@ -20,7 +21,7 @@ const description =
 
 export const metadata: Metadata = {
   metadataBase: new URL(
-        process.env.NEXT_PUBLIC_SITE_URL ?? "https://fantomes-umber.vercel.app"
+    process.env.NEXT_PUBLIC_SITE_URL ?? "https://fantomes-umber.vercel.app"
   ),
   title: titre,
   description,
@@ -51,7 +52,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="fr" className={`${fraunces.variable} ${instrument.variable}`}>
-      <body>{children}</body>
+      <body>
+        {children}
+        <footer className="mt-20 border-t border-filet">
+          <div className="mx-auto max-w-xl px-5 py-10 text-sm">
+            <p className="font-titre text-xl font-bold">Fantômes</p>
+            <nav
+              aria-label="Informations légales"
+              className="mt-4 flex flex-col"
+            >
+              <Link href="/mentions-legales" className="py-3 underline">
+                Mentions légales
+              </Link>
+              <Link href="/cgv" className="py-3 underline">
+                Conditions générales de vente
+              </Link>
+              <Link href="/confidentialite" className="py-3 underline">
+                Politique de confidentialité
+              </Link>
+            </nav>
+          </div>
+        </footer>
+      </body>
     </html>
   );
 }
