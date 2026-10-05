@@ -34,14 +34,3 @@ export default function Accueil() {
     </main>
   );
 }
-          href="#inscription"
-          className="mt-6 flex min-h-14 w-full items-center justify-center rounded-lg border border-encre px-6 text-lg font-bold"
-        >
-          Remonter pour m&apos;inscrire
-        </a>
-      </section>
-
-      <Barre />
-    </main>
-  );
-}
