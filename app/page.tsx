@@ -31,7 +31,3 @@ export default function Accueil() {
     </main>
   );
 }
-      </section>
-    </main>
-  );
-}
