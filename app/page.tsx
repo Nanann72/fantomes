@@ -1,5 +1,6 @@
 import Barre from "./barre";
 import Demo from "./demo";
+import Faq from "./faq";
 import Hero from "./hero";
 
 export default function Accueil() {
@@ -8,6 +9,8 @@ export default function Accueil() {
       <Hero />
 
       <Demo />
+
+      <Faq />
 
       <section
         id="fin"
@@ -20,6 +23,17 @@ export default function Accueil() {
           d&apos;autre.
         </p>
         <a
+          href="#inscription"
+          className="mt-6 flex min-h-14 w-full items-center justify-center rounded-lg border border-encre px-6 text-lg font-bold"
+        >
+          Remonter pour m&apos;inscrire
+        </a>
+      </section>
+
+      <Barre />
+    </main>
+  );
+}
           href="#inscription"
           className="mt-6 flex min-h-14 w-full items-center justify-center rounded-lg border border-encre px-6 text-lg font-bold"
         >
