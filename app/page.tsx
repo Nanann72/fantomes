@@ -1,3 +1,4 @@
+import Barre from "./barre";
 import Demo from "./demo";
 import Hero from "./hero";
 
@@ -8,7 +9,10 @@ export default function Accueil() {
 
       <Demo />
 
-      <section className="mt-14 border-t border-filet pt-10">
+      <section
+        id="fin"
+        className="mt-14 border-t border-filet pt-10"
+      >
         <h2 className="text-2xl">Ouverture prochaine</h2>
         <p className="mt-3">
           Fantômes est en construction. Laisse ton email en haut de la page :
@@ -21,6 +25,12 @@ export default function Accueil() {
         >
           Remonter pour m&apos;inscrire
         </a>
+      </section>
+
+      <Barre />
+    </main>
+  );
+}
       </section>
     </main>
   );
