@@ -1,4 +1,5 @@
 import Bandeau from "./bandeau";
+import Film from "./film";
 import Formulaire from "./formulaire";
 
 const euros = (n: number) =>
@@ -39,6 +40,8 @@ export default function Hero() {
         Fantômes n&apos;est pas encore ouvert. Aucun paiement demandé.
       </p>
 
+      <Film />
+
       <Bandeau />
 
       <div className="mt-12 -rotate-1 rounded-[2rem] border-2 border-encre bg-white p-5 shadow-[6px_6px_0_0_#14213d]">
@@ -69,6 +72,9 @@ export default function Hero() {
           Services et montants inventés pour illustrer.
         </p>
       </div>
+    </header>
+  );
+}
     </header>
   );
 }
