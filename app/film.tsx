@@ -20,6 +20,42 @@ const MAX = Math.max(...LIGNES.map((l) => l.annuel));
 const LETTRE =
   "Madame, Monsieur, je souhaite résilier mon abonnement FitBox. Merci de me confirmer la date de fin et l'arrêt des prélèvements. Cordialement.";
 
+const PHRASES = [
+  "Un abonnement. Vingt-quatre euros quatre-vingt-dix par mois.",
+  "Tu l'as pris pour un essai.",
+  "Et tu l'as oublié.",
+  "Mois après mois, la facture grossit.",
+  "Et ce n'est pas le seul.",
+  "Ils sont tous cachés dans ton relevé.",
+  "Fantômes les classe par coût annuel.",
+  "Au total, près de quatre cents euros par an.",
+  "Tu choisis : tu gardes, ou tu résilies.",
+  "Résilié.",
+  "Et la lettre est déjà écrite.",
+  "Exemples fictifs : ton total dépendra de toi.",
+  "Fantômes. Laisse ton email, on te prévient à l'ouverture.",
+];
+
+function arreter() {
+  if (typeof window !== "undefined" && "speechSynthesis" in window) {
+    window.speechSynthesis.cancel();
+  }
+}
+
+function dire(texte: string) {
+  if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
+  const synth = window.speechSynthesis;
+  synth.cancel();
+  const u = new SpeechSynthesisUtterance(texte);
+  u.lang = "fr-FR";
+  u.rate = 1;
+  const voix = synth
+    .getVoices()
+    .find((v) => v.lang.toLowerCase().startsWith("fr"));
+  if (voix) u.voice = voix;
+  synth.speak(u);
+}
+
 const gros = "font-titre text-6xl font-bold text-brule";
 
 function Gh({ cls = "w-28" }: { cls?: string }) {
@@ -79,7 +115,7 @@ type Scene = { d: number; vue: (k: number, fermer: () => void) => ReactNode };
 
 const SCENES: Scene[] = [
   {
-    d: 3000,
+    d: 4200,
     vue: (k) => (
       <Bloc k={k}>
         <p className="text-xl">Un abonnement.</p>
@@ -214,7 +250,7 @@ const SCENES: Scene[] = [
     ),
   },
   {
-    d: 3200,
+    d: 4000,
     vue: (k) => (
       <Bloc k={k}>
         <p className="text-lg">Au total</p>
@@ -224,7 +260,7 @@ const SCENES: Scene[] = [
     ),
   },
   {
-    d: 3200,
+    d: 3600,
     vue: (k) => (
       <Bloc k={k}>
         <h3 className="text-3xl">Tu tranches en 2 secondes.</h3>
@@ -269,7 +305,7 @@ const SCENES: Scene[] = [
     ),
   },
   {
-    d: 3200,
+    d: 4000,
     vue: (k) => (
       <Bloc k={k}>
         <p className="text-lg">Économie sur l&apos;année</p>
@@ -299,25 +335,32 @@ const SCENES: Scene[] = [
 
 const FIN = SCENES.reduce((s, c) => s + c.d, 0);
 
+const btn =
+  "flex min-h-11 items-center justify-center rounded-lg border border-encre px-5 text-sm font-bold";
+
 export default function Film() {
   const [ouvert, setOuvert] = useState(false);
   const [t, setT] = useState(0);
   const [pause, setPause] = useState(false);
   const [reduit, setReduit] = useState(false);
   const [idx, setIdx] = useState(0);
-  const bouton = useRef<HTMLButtonElement>(null);
+  const [muet, setMuet] = useState(false);
+  const [voixDispo, setVoixDispo] = useState(false);
+  const dernier = useRef(-1);
 
   useEffect(() => {
     setReduit(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
+    setVoixDispo("speechSynthesis" in window);
+    return () => arreter();
   }, []);
 
   useEffect(() => {
     if (!ouvert || pause || reduit) return;
     let raf = 0;
-    let dernier = performance.now();
+    let precedent = performance.now();
     const boucle = (now: number) => {
-      const dt = now - dernier;
-      dernier = now;
+      const dt = now - precedent;
+      precedent = now;
       setT((v) => Math.min(v + dt, FIN));
       raf = requestAnimationFrame(boucle);
     };
@@ -338,22 +381,6 @@ export default function Film() {
     };
   }, [ouvert]);
 
-  const ouvrir = () => {
-    setT(0);
-    setIdx(0);
-    setPause(false);
-    setOuvert(true);
-  };
-
-  const fermer = () => {
-    setOuvert(false);
-    setTimeout(() => {
-      document
-        .getElementById("inscription")
-        ?.scrollIntoView({ behavior: "smooth" });
-    }, 50);
-  };
-
   let i = SCENES.length - 1;
   let debut = FIN - SCENES[i].d;
   if (!reduit) {
@@ -369,18 +396,51 @@ export default function Film() {
   } else {
     i = idx;
   }
+
+  useEffect(() => {
+    if (!ouvert || pause || muet || reduit || !voixDispo) {
+      arreter();
+      dernier.current = -1;
+      return;
+    }
+    if (dernier.current !== i) {
+      dernier.current = i;
+      dire(PHRASES[i]);
+    }
+  }, [ouvert, pause, muet, reduit, voixDispo, i]);
+
+  const ouvrir = () => {
+    setT(0);
+    setIdx(0);
+    setPause(false);
+    setOuvert(true);
+    if (!muet && !reduit && voixDispo) {
+      dire(PHRASES[0]);
+      dernier.current = 0;
+    }
+  };
+
+  const fermer = () => {
+    setOuvert(false);
+    setTimeout(() => {
+      document
+        .getElementById("inscription")
+        ?.scrollIntoView({ behavior: "smooth" });
+    }, 50);
+  };
+
   const k = reduit ? 0.87 : clamp((t - debut) / SCENES[i].d);
   const termine = reduit ? idx === SCENES.length - 1 : t >= FIN;
+  const avancement = reduit ? (idx + 1) / SCENES.length : t / FIN;
 
   return (
     <div className="mt-8">
       <button
-        ref={bouton}
         type="button"
         onClick={ouvrir}
         className="flex min-h-14 w-full items-center justify-center rounded-lg border border-encre px-6 text-lg font-bold"
       >
-        Voir en 45 secondes
+        Voir en 50 secondes
       </button>
 
       {ouvert && (
@@ -392,7 +452,7 @@ export default function Film() {
         >
           <div
             className="absolute inset-x-0 top-0 h-1 origin-left bg-brule"
-            style={{ transform: `scaleX(${reduit ? (idx + 1) / SCENES.length : t / FIN})` }}
+            style={{ transform: `scaleX(${avancement})` }}
           />
 
           {SCENES[i].vue(k, fermer)}
@@ -412,7 +472,7 @@ export default function Film() {
                   <button
                     type="button"
                     onClick={() => setIdx((v) => v + 1)}
-                    className="flex min-h-11 items-center justify-center rounded-lg border border-encre px-5 text-sm font-bold"
+                    className={btn}
                   >
                     Suivant
                   </button>
@@ -424,7 +484,7 @@ export default function Film() {
                     setT(0);
                     setPause(false);
                   }}
-                  className="flex min-h-11 items-center justify-center rounded-lg border border-encre px-5 text-sm font-bold"
+                  className={btn}
                 >
                   Rejouer
                 </button>
@@ -432,9 +492,18 @@ export default function Film() {
                 <button
                   type="button"
                   onClick={() => setPause((v) => !v)}
-                  className="flex min-h-11 items-center justify-center rounded-lg border border-encre px-5 text-sm font-bold"
+                  className={btn}
                 >
                   {pause ? "Reprendre" : "Pause"}
+                </button>
+              )}
+              {!reduit && voixDispo && (
+                <button
+                  type="button"
+                  onClick={() => setMuet((v) => !v)}
+                  className={btn}
+                >
+                  {muet ? "Remettre la voix" : "Couper la voix"}
                 </button>
               )}
             </div>
