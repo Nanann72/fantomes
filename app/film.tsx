@@ -42,16 +42,31 @@ function arreter() {
   }
 }
 
+function choisirVoix(): SpeechSynthesisVoice | undefined {
+  const francaises = window.speechSynthesis
+    .getVoices()
+    .filter((v) => v.lang.toLowerCase().startsWith("fr"));
+  const note = (v: SpeechSynthesisVoice) => {
+    const nom = v.name.toLowerCase();
+    let s = 0;
+    if (v.lang.toLowerCase().replace("_", "-") === "fr-fr") s += 2;
+    if (/premium|enhanced|améliorée|ameliore|siri/.test(nom)) s += 5;
+    if (/compact/.test(nom)) s -= 3;
+    if (v.localService) s += 1;
+    return s;
+  };
+  return francaises.sort((a, b) => note(b) - note(a))[0];
+}
+
 function dire(texte: string) {
   if (typeof window === "undefined" || !("speechSynthesis" in window)) return;
   const synth = window.speechSynthesis;
   synth.cancel();
   const u = new SpeechSynthesisUtterance(texte);
   u.lang = "fr-FR";
-  u.rate = 1;
-  const voix = synth
-    .getVoices()
-    .find((v) => v.lang.toLowerCase().startsWith("fr"));
+  u.rate = 1.15;
+  u.pitch = 1;
+  const voix = choisirVoix();
   if (voix) u.voice = voix;
   synth.speak(u);
 }
@@ -350,7 +365,9 @@ export default function Film() {
 
   useEffect(() => {
     setReduit(window.matchMedia("(prefers-reduced-motion: reduce)").matches);
-    setVoixDispo("speechSynthesis" in window);
+    const ok = "speechSynthesis" in window;
+    setVoixDispo(ok);
+    if (ok) window.speechSynthesis.getVoices();
     return () => arreter();
   }, []);
 
