@@ -2,11 +2,14 @@ import Barre from "./barre";
 import Demo from "./demo";
 import Faq from "./faq";
 import Hero from "./hero";
+import Histoire from "./histoire";
 
 export default function Accueil() {
   return (
     <main className="mx-auto max-w-xl px-5 pb-6 pt-10">
       <Hero />
+
+      <Histoire />
 
       <Demo />
 
