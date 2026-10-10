@@ -1,6 +1,13 @@
 "use client";
 
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import {
+  LazyMotion,
+  domAnimation,
+  m,
+  useReducedMotion,
+  type Variants,
+} from "framer-motion";
+import type { ReactNode } from "react";
 
 const euros = (n: number) =>
   n.toLocaleString("fr-FR", {
@@ -16,52 +23,70 @@ const abonnements = [
   { nom: "Musica+", rythme: "2,99 € par mois", annuel: 2.99 * 12, resilier: true },
 ].sort((a, b) => b.annuel - a.annuel);
 
-function Apparition({ children }: { children: ReactNode }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const [cache, setCache] = useState(false);
+const liste: Variants = {
+  cache: {},
+  visible: { transition: { staggerChildren: 0.08, delayChildren: 0.3 } },
+};
 
-  useEffect(() => {
-    const el = ref.current;
-    if (!el || typeof IntersectionObserver === "undefined") return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    if (el.getBoundingClientRect().top < window.innerHeight) return;
-    setCache(true);
-    const obs = new IntersectionObserver(
-      ([e]) => {
-        if (e.isIntersecting) {
-          setCache(false);
-          obs.disconnect();
-        }
-      },
-      { threshold: 0.15 }
-    );
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-
-  return (
-    <div
-      ref={ref}
-      className={`transition-all duration-700 ease-out ${
-        cache ? "translate-y-8 opacity-0" : "translate-y-0 opacity-100"
-      }`}
-    >
-      {children}
-    </div>
-  );
-}
-
-function Telephone({ children }: { children: ReactNode }) {
-  return (
-    <div className="mx-auto mt-6 w-full max-w-xs rounded-[2rem] border-2 border-encre bg-white p-5 shadow-[6px_6px_0_0_#14213d]">
-      {children}
-    </div>
-  );
-}
+const ligne: Variants = {
+  cache: { opacity: 0, x: 16 },
+  visible: { opacity: 1, x: 0, transition: { duration: 0.4, ease: "easeOut" } },
+};
 
 const etiquette = "text-xs font-semibold uppercase tracking-widest opacity-70";
 
+function Scene({
+  numero,
+  titre,
+  texte,
+  children,
+}: {
+  numero: string;
+  titre: string;
+  texte: string;
+  children: ReactNode;
+}) {
+  const reduit = useReducedMotion();
+  return (
+    <m.div
+      initial={reduit ? false : { opacity: 0, y: 40 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.15 }}
+      transition={{ duration: 0.7, ease: "easeOut" }}
+      className="mt-16"
+    >
+      <p className="font-titre text-6xl font-bold text-brule">{numero}</p>
+      <h3 className="mt-2 text-2xl">{titre}</h3>
+      <p className="mt-2">{texte}</p>
+      {children}
+    </m.div>
+  );
+}
+
+function Telephone({
+  inclinaison,
+  children,
+}: {
+  inclinaison: string;
+  children: ReactNode;
+}) {
+  const reduit = useReducedMotion();
+  return (
+    <m.div
+      initial={reduit ? false : { opacity: 0, scale: 0.96 }}
+      whileInView={{ opacity: 1, scale: 1 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.6, ease: "easeOut", delay: 0.15 }}
+      className={`mx-auto mt-6 w-full max-w-xs rounded-[2rem] border-2 border-encre bg-white p-5 shadow-[6px_6px_0_0_#14213d] ${inclinaison}`}
+    >
+      {children}
+    </m.div>
+  );
+}
+
 export default function Demo() {
+  const reduit = useReducedMotion();
+  const etat = reduit ? "visible" : "cache";
   const total = abonnements.reduce((s, a) => s + a.annuel, 0);
   const economie = abonnements
     .filter((a) => a.resilier)
@@ -69,23 +94,19 @@ export default function Demo() {
   const premier = abonnements[0];
 
   return (
-    <section className="mt-14 border-t border-filet pt-10">
-      <h2 className="text-3xl">Voilà ce que tu verras</h2>
-      <p className="mt-2 text-sm opacity-70">
-        Aperçu illustratif : les services et les montants sont fictifs.
-      </p>
+    <LazyMotion features={domAnimation}>
+      <section className="mt-14 border-t border-filet pt-10">
+        <h2 className="text-3xl">Voilà ce que tu verras</h2>
+        <p className="mt-2 text-sm opacity-70">
+          Aperçu illustratif : les services et les montants sont fictifs.
+        </p>
 
-      <Apparition>
-        <div className="mt-12">
-          <p className="font-titre text-6xl font-bold text-brule">1</p>
-          <h3 className="mt-2 text-2xl">
-            Tout ce qui revient, classé par coût annuel
-          </h3>
-          <p className="mt-2">
-            Le plus lourd en premier. Un petit montant mensuel pèse vite sur
-            douze mois.
-          </p>
-          <Telephone>
+        <Scene
+          numero="1"
+          titre="Tout ce qui revient, classé par coût annuel"
+          texte="Le plus lourd en premier. Un petit montant mensuel pèse vite sur douze mois."
+        >
+          <Telephone inclinaison="-rotate-1">
             <p className={etiquette}>Tes prélèvements</p>
             <p className="mt-1 flex items-baseline justify-between">
               <span className="text-sm">Total par an</span>
@@ -93,10 +114,17 @@ export default function Demo() {
                 {euros(total)} €
               </span>
             </p>
-            <ul className="mt-3 divide-y divide-filet border-t border-filet">
+            <m.ul
+              variants={liste}
+              initial={etat}
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              className="mt-3 divide-y divide-filet border-t border-filet"
+            >
               {abonnements.map((a) => (
-                <li
+                <m.li
                   key={a.nom}
+                  variants={ligne}
                   className="flex items-baseline justify-between gap-3 py-2 text-sm"
                 >
                   <span>
@@ -106,22 +134,18 @@ export default function Demo() {
                   <span className="whitespace-nowrap font-titre font-bold text-brule">
                     {euros(a.annuel)} €
                   </span>
-                </li>
+                </m.li>
               ))}
-            </ul>
+            </m.ul>
           </Telephone>
-        </div>
-      </Apparition>
+        </Scene>
 
-      <Apparition>
-        <div className="mt-16">
-          <p className="font-titre text-6xl font-bold text-brule">2</p>
-          <h3 className="mt-2 text-2xl">Tu tranches en deux secondes</h3>
-          <p className="mt-2">
-            Pour chaque ligne : tu gardes ou tu résilies. C&apos;est toi qui
-            décides, et ton économie se met à jour.
-          </p>
-          <Telephone>
+        <Scene
+          numero="2"
+          titre="Tu tranches en deux secondes"
+          texte="Pour chaque ligne : tu gardes ou tu résilies. C'est toi qui décides, et ton économie se met à jour."
+        >
+          <Telephone inclinaison="rotate-1">
             <p className={etiquette}>Ta décision</p>
             <p className="mt-2 text-sm font-semibold">Tu t&apos;en sers encore ?</p>
             <div className="mt-2 rounded-lg border border-filet p-3">
@@ -133,24 +157,36 @@ export default function Demo() {
                 <span className="flex min-h-11 items-center justify-center rounded-lg border border-encre text-sm font-bold">
                   Je garde
                 </span>
-                <span className="flex min-h-11 items-center justify-center rounded-lg bg-brule text-sm font-bold text-papier">
+                <m.span
+                  whileInView={reduit ? undefined : { scale: [1, 0.9, 1] }}
+                  viewport={{ once: true, amount: 0.6 }}
+                  transition={{ delay: 1.1, duration: 0.45 }}
+                  className="flex min-h-11 items-center justify-center rounded-lg bg-brule text-sm font-bold text-papier"
+                >
                   Je résilie
-                </span>
+                </m.span>
               </div>
             </div>
-            <ul className="mt-3 divide-y divide-filet border-t border-filet">
+            <m.ul
+              variants={liste}
+              initial={etat}
+              whileInView="visible"
+              viewport={{ once: true, amount: 0.3 }}
+              className="mt-3 divide-y divide-filet border-t border-filet"
+            >
               {abonnements.map((a) => (
-                <li
+                <m.li
                   key={a.nom}
+                  variants={ligne}
                   className="flex items-center justify-between gap-3 py-2 text-sm"
                 >
                   <span className="font-semibold">{a.nom}</span>
                   <span className={a.resilier ? "font-bold text-brule" : "opacity-70"}>
                     {a.resilier ? "À résilier" : "Je garde"}
                   </span>
-                </li>
+                </m.li>
               ))}
-            </ul>
+            </m.ul>
             <p className="mt-3 flex items-baseline justify-between border-t border-encre pt-3">
               <span className="text-sm font-semibold">Économie sur l&apos;année</span>
               <span className="font-titre text-2xl font-bold text-brule">
@@ -158,18 +194,14 @@ export default function Demo() {
               </span>
             </p>
           </Telephone>
-        </div>
-      </Apparition>
+        </Scene>
 
-      <Apparition>
-        <div className="mt-16">
-          <p className="font-titre text-6xl font-bold text-brule">3</p>
-          <h3 className="mt-2 text-2xl">La lettre de résiliation est déjà écrite</h3>
-          <p className="mt-2">
-            Une lettre par abonnement que tu veux arrêter. Tu la copies ou tu
-            l&apos;imprimes.
-          </p>
-          <Telephone>
+        <Scene
+          numero="3"
+          titre="La lettre de résiliation est déjà écrite"
+          texte="Une lettre par abonnement que tu veux arrêter. Tu la copies ou tu l'imprimes."
+        >
+          <Telephone inclinaison="-rotate-1">
             <p className={etiquette}>Ta lettre</p>
             <div className="mt-2 rounded-lg border border-filet bg-papier p-3 text-xs leading-relaxed">
               <p className="font-semibold">
@@ -183,12 +215,17 @@ export default function Demo() {
               <p className="mt-2">Cordialement,</p>
               <p>[Ton nom]</p>
             </div>
-            <span className="mt-3 flex min-h-11 items-center justify-center rounded-lg bg-brule text-sm font-bold text-papier">
+            <m.span
+              whileInView={reduit ? undefined : { scale: [1, 0.94, 1] }}
+              viewport={{ once: true, amount: 0.6 }}
+              transition={{ delay: 1, duration: 0.45 }}
+              className="mt-3 flex min-h-11 items-center justify-center rounded-lg bg-brule text-sm font-bold text-papier"
+            >
               Copier la lettre
-            </span>
+            </m.span>
           </Telephone>
-        </div>
-      </Apparition>
-    </section>
+        </Scene>
+      </section>
+    </LazyMotion>
   );
 }
